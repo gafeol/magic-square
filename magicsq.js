@@ -1,7 +1,11 @@
 function new_grid(){
 	var t = new Array(3);
-	for(var i = 0;i < 3;i++)
+	for(var i = 0;i < 3;i++){
 		t[i] = new Array(3);
+		for(var j=0;j<3;j++){
+			t[i][j] = -1;
+		}
+	}
 	return t;
 }
 
@@ -21,6 +25,8 @@ function check(t){
 			aux += t[i][j];
 		}
 		if(aux != sum){
+			image.style.display = 'none';
+			image2.style.display = 'block';
 			console.log("Error! sum expected "+sum+" but line "+i+" has sum "+aux);
 			alert("This Square is Not Magic!");
 			return "fail";
@@ -33,6 +39,8 @@ function check(t){
 		}
 		if(aux != sum){
 			console.log("Error! sum expected "+sum+" but column "+i+" has sum "+aux);
+			image.style.display = 'none';
+			image2.style.display = 'block';
 			alert("This Square is Not Magic!");
 			return "fail";
 		}
@@ -45,6 +53,8 @@ function check(t){
 	for(var i=0;i<n;i++){ 
 		for(var j=0;j<n;j++){
 			if(t[i][j] < 1 || t[i][j] > n*n){
+				image.style.display = 'none';
+				image2.style.display = 'block';
 				alert("Error! Number "+t[i][j]+" is out of the range 1 - "+n*n);
 				return "fail";
 			}
@@ -53,6 +63,8 @@ function check(t){
 	}
 	for(var i=1;i<=n*n;i++){
 		if(cnt[i] != 1){
+			image.style.display = 'none';
+			image2.style.display = 'block';
 			alert("Error Numbers in the square are not unique");
 			return 0;
 		}
@@ -63,6 +75,8 @@ function check(t){
 		aux += t[i][i];
 	}
 	if(aux != sum){
+		image.style.display = 'none';
+		image2.style.display = 'block';
 		console.log("Error! sum expected "+sum+" but principal diagonal has sum "+aux);
 		alert("This Square is Not Magic!");
 		return "fail";
@@ -73,6 +87,8 @@ function check(t){
 	}
 	if(aux != sum){
 		console.log("Error! sum expected "+sum+" but secondary diagonal has sum "+aux);
+		image.style.display = 'none';
+		image2.style.display = 'block';
 		alert("This Square is Not Magic!");
 		return "fail";
 	}
@@ -113,14 +129,40 @@ function solve(){
 		alert("Solver not yet implemented for even tables");
 		return 0;
 	}
+
+	var t = new_grid();
+	for(var i=0;i<n;i++){
+		for(var j=0;j<n;j++){
+			t[i][j] = Number(-1);
+		}
+	}
+
 	var i = 0, j =	Math.floor(n/2);
+	var ni = i, nj = j;
+
 	var cnt = 1;
 	console.log("cell "+(n*i+j)+" "+(cnt-1));
 	while(cnt <= n*n){
+		if(t[ni][nj] != -1){
+			ni = (i+1)%n;
+			nj = j;
+		}
+		i = ni;
+		j = nj;
+		if(t[i][j] != -1){
+			console.log("Overwriting cell "+i+" "+j+" with "+cnt);
+		}
+		t[i][j] = cnt;
 		document.getElementById("cell-"+(n*i+j)).value = cnt++;
 		console.log("i "+i+" j "+j+" cell "+(n*i+j)+" "+(cnt-1));
-		i = (i+n-1)%n;
-		j = (j+1)%n;
+		ni = (i+n-1)%n;
+		nj = (j+1)%n;
+
+		//When the next number position is outside both a row and a column, place the number directly beneath the previous number.
+		if(ni == n-1 && nj == 0){ 
+			ni = i+1;
+			nj = j;
+		}
 	}
 	alert("Solved!");
 	return 1;
