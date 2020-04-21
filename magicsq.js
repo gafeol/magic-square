@@ -168,7 +168,20 @@ function solve(){
 	return 1;
 }
 
+function clear(){
+	console.log("starting clear");
+	var n = 3;
+	for(var i=0;i<n;i++){
+		for(var j=0;j<n;j++){
+			document.getElementById("cell-"+(n*i+j)).value = "";
+		}
+	}
+	alert("Cleared!");
+}
+
 check_button = document.getElementById("check");
 check_button.addEventListener("click", read);
 solve_button = document.getElementById("solve");
 solve_button.addEventListener("click", solve);
+clear_button = document.getElementById("clear");
+clear_button.addEventListener("click", clear);
